@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #ff69b4; /* Rosa suave */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #ff69b4; /* Rosa suave */
+            color: white;
+        }
+        .total {
+            text-align: right;
+            font-weight: bold;
+        }
+        .total-value {
+            text-align: right;
+        }
+        button {
+            background-color: #ff69b4; /* Rosa suave */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e055a3;
+        }
+        select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <script>
+        function calcularTotal() {
+            let checkboxes = document.querySelectorAll('input[name="productos_servicios"]:checked');
+            let total = 0;
+            checkboxes.forEach((checkbox) => {
+                total += parseFloat(checkbox.dataset.precio);
+            });
+            document.getElementById('total-pagar').textContent = total.toFixed(2);
+        }
+    </script>
+</head>
+<body>
+    <h1>Factura</h1>
+    <form method="POST" action="/factura">
+        <label for="nombre_cliente">Nombre del Cliente:</label>
+        <input type="text" id="nombre_cliente" name="nombre_cliente" required>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto/Servicio</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Seleccionar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos_servicios %}
+                <tr>
+                    <td>{{ producto.ProductoServicio }}</td>
+                    <td>{{ producto.Descripcion }}</td>
+                    <td>{{ producto.Precio }}</td>
+                    <td><input type="checkbox" name="productos_servicios" value="{{ producto.id }}" data-precio="{{ producto.Precio }}" onchange="calcularTotal()"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="total">Total a Pagar</td>
+                    <td class="total-value" id="total-pagar">0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="total">Tipo de Pago</td>
+                    <td>
+                        <select name="tipo_pago">
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                            <option value="Crédito">Crédito</option>
+                        </select>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <button type="submit">Imprimir Factura</button>
+    </form>
+</body>
+</html>

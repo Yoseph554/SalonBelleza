@@ -7,4 +7,6 @@ Una aplicación web para la gestión de un salón de belleza.
 - Python
 - Flask
 - SQLite
-- HTML/CSS
+- HTML
+- CSS
+- JS
